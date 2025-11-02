@@ -32,6 +32,8 @@ int main(int argc, char **argv) {
 		nob_cmd_append(&cmd, "mingw", "-o", PROGRAM_NAME);
 	#endif
 
+	nob_cmd_append(&cmd, "-g");
+
 	// Get all files out of src dir
 	/*
  	* What the fuck is going on with this? Why does it shit all over my path?
@@ -60,9 +62,11 @@ int main(int argc, char **argv) {
 
 	nob_cmd_append(&cmd, "src/main.c");
 	nob_cmd_append(&cmd, "src/gameobjects.c");
+	nob_cmd_append(&cmd, "src/collisions.c");
 
 	// Include
 	nob_cmd_append(&cmd, "-Iinclude");
+
 
 	// Libraries
 	#if defined(TARGET_UNIX)

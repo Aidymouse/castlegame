@@ -1,8 +1,10 @@
+#include <stdio.h>
 #include <math.h>
 #include "defines/world.h"
 #include "structs/gameobjects.h"
 
 #include "gameobjects.h"
+#include "collisions.h"
 
 #include "raylib.h"
 #include "raymath.h"
@@ -10,7 +12,7 @@
 #define WINDOW_TITLE "Castle Game"
 
 int main() {
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    //SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT, WINDOW_TITLE);
     SetExitKey(0);
     SetTargetFPS(60);
@@ -22,9 +24,21 @@ int main() {
 
 
 	PlatformLine platforms[10] = {0};
-	platforms[0] = (PlatformLine){ .start = (Vector2){0, SCREEN_WORLD_HEIGHT-50}, .end = (Vector2){SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT-50} };
-	platforms[1] = (PlatformLine){ .start = (Vector2){0, SCREEN_WORLD_HEIGHT-200}, .end = (Vector2){100, SCREEN_WORLD_HEIGHT} };
-	platforms[2] = (PlatformLine){ .start = (Vector2){SCREEN_WORLD_WIDTH-300, SCREEN_WORLD_HEIGHT}, .end = (Vector2){SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT-70} };
+	platforms[0] = (PlatformLine){ .line = { 
+		.start = {.x = 0, .y = SCREEN_WORLD_HEIGHT-50},
+		.end = {.x = SCREEN_WORLD_WIDTH, .y = SCREEN_WORLD_HEIGHT-50}
+	}};
+	platforms[1] = (PlatformLine){ .line = { 
+		.start = {.x = 0, .y = SCREEN_WORLD_HEIGHT-200 },
+		.end = {.x = 100, .y = SCREEN_WORLD_HEIGHT-50}
+	}};
+	platforms[2] = (PlatformLine){ .line = { 
+		.start = {.x = SCREEN_WORLD_WIDTH-300, .y = SCREEN_WORLD_HEIGHT},
+		.end = {.x = SCREEN_WORLD_WIDTH, .y = SCREEN_WORLD_HEIGHT-70}
+	}};
+//(Vector2){0, SCREEN_WORLD_HEIGHT-50}, .end = (Vector2){SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT-50} };
+	//platforms[1] = (PlatformLine){ .start = (Vector2){0, SCREEN_WORLD_HEIGHT-200}, .end = (Vector2){100, SCREEN_WORLD_HEIGHT} };
+	//platforms[2] = (PlatformLine){ .start = (Vector2){SCREEN_WORLD_WIDTH-300, SCREEN_WORLD_HEIGHT}, .end = (Vector2){SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT-70} };
 	const int NUM_PLATFORMS = 3;
 
 	Player player = {
@@ -39,7 +53,8 @@ int main() {
 
 
     while (!WindowShouldClose()) {
-		dt = GetFrameTime();
+		//dt = GetFrameTime();
+		dt = 0.016; // For debugging
 
 		// Ensure the screen is always in the middle of the window
 		float screen_width = GetScreenWidth();
@@ -58,10 +73,10 @@ int main() {
 		cam_render.offset.y = extra_height/2;
 
 		/** UPDATE **/
-		if (IsKeyDown(KEY_LEFT)) {
+		if (IsKeyDown(KEY_A)) {
 			player.dir.x = -1;
 			player.speed.x = Clamp(player.speed.x+30, 0, 100);
-		} else if (IsKeyDown(KEY_RIGHT)) {
+		} else if (IsKeyDown(KEY_D)) {
 			// One day this will need to only change dir if speed is 0
 			player.dir.x = 1;
 			player.speed.x = Clamp(player.speed.x+30, 0, 100);
@@ -72,19 +87,62 @@ int main() {
 		}
 
 		player.dir.y = 1;
-		player.speed.y += 2;
-
+		player.speed.y += 4;
 		
 
 		player.new_pos.x = player.pos.x + player.speed.x * player.dir.x * dt;
 		player.new_pos.y = player.pos.y + player.speed.y * player.dir.y * dt; // TODO: gravity
 
-		// Collisions
+
+		/** Collisions **/
+		Vector2 new_pos_ray = Vector2Subtract(player.new_pos, player.pos);
+		player.debug.collision_ray = new_pos_ray;
+
+		if (player.speed.x > 0) {
+			int i = 0;
+		}
+
 		for (int p_idx=0; p_idx<NUM_PLATFORMS; p_idx++) {
-			// Shoot a ray from each corner in direction of motion
-			// If any rays hit, take the shorted ray and walk the character back along the ray cast
-			Vector2 new_pos_ray = Vector2Subtract(player.new_pos, player.pos);
-			player.debug.collision_ray = new_pos_ray;
+
+			PlatformLine platform = platforms[p_idx];
+
+			Vector2 collision_source = player.pos; // Anchored to bottom middle
+
+
+
+
+			// Get ray from pos to next pos
+			// If ray hits a line, cast a ray from next pos 
+			// 		If the slope is shallow enough to walk on, up and down
+			// 		If the slope is too steep to walk on ( or is slide type ) cast one left and right
+			//
+
+			Vector2 move_col_pos;
+			// TODO: to handle multiple lines we'll need to store all these collisions and take the shortest one
+			if (CheckCollisionLines(player.pos, player.new_pos, platform.line.start, platform.line.end, &move_col_pos)) {
+				// Cast a ray up and down
+				// Later, left and right too, for slopes that make us fall
+
+
+				Vector2 up_ray = {0, -100};
+				Vector2 down_ray = {0, 100};
+
+				Vector2 up_col_pos;
+				Vector2 down_col_pos;
+
+				// Okay it looks like the line collision function in Raylib gives you nothing if you are not on a flaot
+				
+				if (CheckCollisionLines(player.new_pos, Vector2Add(player.new_pos, up_ray), platform.line.start, platform.line.end, &up_col_pos)) {
+					player.new_pos.y = up_col_pos.y - 1; // Otherwise the line doesn't work
+					player.speed.y = 0;
+				} else if (CheckCollisionLines(player.new_pos, Vector2Add(player.new_pos, down_ray), platform.line.start, platform.line.end, &down_col_pos)) {
+					player.new_pos.y = down_col_pos.y + 1;
+				}
+			} else {
+				printf("No col this frame\n");
+			}
+
+			
 
 			
 		}
@@ -101,11 +159,13 @@ int main() {
 
 		// Platforms
 		for (int p_idx = 0; p_idx < NUM_PLATFORMS; p_idx ++) {
-			DrawLineV(platforms[p_idx].start, platforms[p_idx].end, WHITE);
+			DrawLineV(platforms[p_idx].line.start, platforms[p_idx].line.end, WHITE);
 		}
 
+		Vector2 rounded_pos = { floor(player.pos.x), floor(player.pos.y) };
 		// Player
 		draw_hitbox(player.pos, player.hitbox);
+
 
 		DrawLineV(player.pos, Vector2Add(player.pos, player.debug.collision_ray), PINK);
 

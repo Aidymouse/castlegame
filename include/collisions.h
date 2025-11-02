@@ -1,9 +1,15 @@
 #ifndef _COLLISIONS_H_
-#define _COLLISIONS_H
+#define _COLLISIONS_H_
 
-typedef struct RayCollision {
-	
-} RayCollision;
+// RayCollision was taken by raylib
+typedef struct RayCollisionInfo {
+	//Vector2 source_point;
+	//Vector2 ray;
+	/* Point the collision takes place in */
+	Vector2 collision_point;
+	//Vector2 minimum_moveback;	
+	//float dist_to_collision;
+} RayCollisionInfo;
 
 typedef struct LineSegment {
 	Vector2 start;
@@ -11,8 +17,7 @@ typedef struct LineSegment {
 } LineSegment;
 
 
-RayCollision get_shortest_ray_collision_with_line_segment_from_many_points(Vector2 *points, int num_points, Vector2 ray, Vector2 line_segment) {
-}
+bool get_shortest_ray_collision_with_line_segment_from_many_points(Vector2 *points, int num_points, Vector2 ray, LineSegment line_segment, RayCollisionInfo *shortest_collision);
 
 
 #endif
