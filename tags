@@ -1,15 +1,2 @@
-Collision	include/collisions.h	/^typedef struct Collision {$/;"	s
-Collision	include/collisions.h	/^} Collision;$/;"	t	typeref:struct:Collision
-LineSegment	include/collisions.h	/^typedef struct LineSegment {$/;"	s
-LineSegment	include/collisions.h	/^} LineSegment;$/;"	t	typeref:struct:LineSegment
-RayCollisionInfo	include/collisions.h	/^typedef struct RayCollisionInfo {$/;"	s
-RayCollisionInfo	include/collisions.h	/^} RayCollisionInfo;$/;"	t	typeref:struct:RayCollisionInfo
 WINDOW_TITLE	src/main.c	/^#define WINDOW_TITLE /;"	d	file:
-_COLLISIONS_H_	include/collisions.h	/^#define _COLLISIONS_H_$/;"	d
-collision_point	include/collisions.h	/^	Vector2 collision_point;$/;"	m	struct:Collision	typeref:typename:Vector2
-collision_point	include/collisions.h	/^	Vector2 collision_point;$/;"	m	struct:RayCollisionInfo	typeref:typename:Vector2
-dir	include/collisions.h	/^	Vector2 dir;$/;"	m	struct:Collision	typeref:typename:Vector2
-dist	include/collisions.h	/^	float dist;$/;"	m	struct:Collision	typeref:typename:float
-end	include/collisions.h	/^	Vector2 end;$/;"	m	struct:LineSegment	typeref:typename:Vector2
 main	src/main.c	/^int main() {$/;"	f	typeref:typename:int
-start	include/collisions.h	/^	Vector2 start;$/;"	m	struct:LineSegment	typeref:typename:Vector2

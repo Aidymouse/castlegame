@@ -16,15 +16,22 @@ typedef struct LineSegment {
 	Vector2 end;
 } LineSegment;
 
+typedef enum CollisionType {
+	CT_SLOPE=0,
+	CT_GROUND=1,
+	CT_WALL=2,
+} CollisionType;
+
 typedef struct Collision {
-	/* Distance from cur pos to intersection*/
+	/* Distance from */
 	float dist;
 	/* Point of collision */
-	Vector2 collision_point;
+	Vector2 desired_pos;
 	/* Dir vector normal of hit line - changes based on which dir you hit it from */
 	//Vector2 hit_normal;
 	/* Dir of motion */
-	Vector2 dir;
+	//Vector2 dir;
+	CollisionType type;
 } Collision;
 
 bool get_shortest_ray_collision_with_line_segment_from_many_points(Vector2 *points, int num_points, Vector2 ray, LineSegment line_segment, RayCollisionInfo *shortest_collision);
