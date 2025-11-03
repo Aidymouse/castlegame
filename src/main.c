@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "defines/world.h"
+#include "defines/player.h"
+
 #include "structs/gameobjects.h"
 
 #include "gameobjects.h"
@@ -75,13 +77,13 @@ int main() {
 		/** UPDATE **/
 		if (IsKeyDown(KEY_A)) {
 			player.dir.x = -1;
-			player.speed.x = Clamp(player.speed.x+30, 0, 100);
+			player.speed.x = Clamp(player.speed.x+30, 0, MAX_HORIZ_SPEED);
 		} else if (IsKeyDown(KEY_D)) {
 			// One day this will need to only change dir if speed is 0
 			player.dir.x = 1;
-			player.speed.x = Clamp(player.speed.x+30, 0, 100);
+			player.speed.x = Clamp(player.speed.x+30, 0, MAX_HORIZ_SPEED);
 		} else {
-			player.speed.x = Clamp(player.speed.x-30, 0, 100);
+			player.speed.x = Clamp(player.speed.x-30, 0, MAX_HORIZ_SPEED);
 			//player.speed.x = 0;
 			//player.dir.x = 0;
 		}
@@ -102,14 +104,15 @@ int main() {
 			int i = 0;
 		}
 
+		// Collect collisions
+		Collision collisions[8];
+		int num_collisions = 0;
+
 		for (int p_idx=0; p_idx<NUM_PLATFORMS; p_idx++) {
 
 			PlatformLine platform = platforms[p_idx];
 
 			Vector2 collision_source = player.pos; // Anchored to bottom middle
-
-
-
 
 			// Get ray from pos to next pos
 			// If ray hits a line, cast a ray from next pos 
@@ -133,19 +136,44 @@ int main() {
 				// Okay it looks like the line collision function in Raylib gives you nothing if you are not on a flaot
 				
 				if (CheckCollisionLines(player.new_pos, Vector2Add(player.new_pos, up_ray), platform.line.start, platform.line.end, &up_col_pos)) {
-					player.new_pos.y = up_col_pos.y - 1; // Otherwise the line doesn't work
-					player.speed.y = 0;
+					//player.new_pos.y = up_col_pos.y - 1; // Otherwise the line doesn't work
+					//player.speed.y = 0;
+					Collision up_col = {
+						.dist = Vector2Distance(player.pos, up_col_pos),
+						.collision_pos = up_col_pos,
+						.dir = { .x = 0, .y = -1 }
+					};
+					collisions[num_collisions] = up_col;
+					num_collisions += 1;
 				} else if (CheckCollisionLines(player.new_pos, Vector2Add(player.new_pos, down_ray), platform.line.start, platform.line.end, &down_col_pos)) {
-					player.new_pos.y = down_col_pos.y + 1;
+					Collision down_col = {
+						.dist = Vector2Distance(player.pos, down_col_pos),
+						.collision_pos = down_col_pos,
+						.dir = { .x = 0, .y = 1 }
+					};
+					collisions[num_collisions] = down_col;
+					num_collisions += 1;
 				}
-			} else {
-				printf("No col this frame\n");
-			}
-
-			
-
+			} 
 			
 		}
+
+		// Act on shortest collision
+		if (num_collisions > 0) {
+			Collision shortest_collision = collisions[0];
+			for (int col_idx=1; col_idx<num_collisions; col_idx++) {
+				Collision check_col = collisions[col_idx];
+				if (check_col.dist < shortest_collision.dist) {
+					shortest_collision = check_col;
+				}
+			}
+
+			printf("Shortest Collision %f, %f\n", shortest_collision.collision_pos.x, shortest_collision.collision_pos.y);
+			player.new_pos = Vector2Add(shortest_collision.collision_pos, shortest_collision.dir);
+
+			player.speed.y = 0;
+		}
+		
 
 		// Update positions
 		player.pos = player.new_pos;

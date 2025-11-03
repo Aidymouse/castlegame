@@ -16,6 +16,12 @@ typedef struct LineSegment {
 	Vector2 end;
 } LineSegment;
 
+typedef struct Collision {
+	/* Distance from cur pos to intersection*/
+	float dist;
+	Vector2 collision_pos;
+	Vector2 dir; // up, down, left, or right dir vector
+} Collision;
 
 bool get_shortest_ray_collision_with_line_segment_from_many_points(Vector2 *points, int num_points, Vector2 ray, LineSegment line_segment, RayCollisionInfo *shortest_collision);
 
