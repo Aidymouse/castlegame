@@ -1,1 +1,1 @@
-#define MAX_HORIZ_SPEED 400
+#define MAX_HORIZ_SPEED 200

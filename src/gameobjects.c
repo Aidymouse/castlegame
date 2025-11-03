@@ -1,3 +1,4 @@
+#include <math.h>
 // The world is made up of screens, each a long rectangle
 // Game objects in each screen have some life cycle methods
 // The world simulates entity movement and stuff on screens adjacent to the one the character is on
@@ -22,5 +23,5 @@ void draw_hitbox(Vector2 pos, Hitbox hitbox) {
 	int hitbox_x = pos.x - hitbox.anchor.x;
 	int hitbox_y = pos.y - hitbox.anchor.y;
 
-	DrawRectangleLines(hitbox_x, hitbox_y, hitbox.width, hitbox.height, RED);
+	DrawRectangleLines(floor(hitbox_x), floor(hitbox_y), hitbox.width, hitbox.height, RED);
 }

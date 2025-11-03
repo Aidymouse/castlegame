@@ -7,6 +7,7 @@
 
 #include "gameobjects.h"
 #include "collisions.h"
+#include "Vec2.h"
 
 #include "raylib.h"
 #include "raymath.h"
@@ -24,11 +25,10 @@ int main() {
 
 	float dt = 0;
 
-
 	PlatformLine platforms[10] = {0};
 	platforms[0] = (PlatformLine){ .line = { 
-		.start = {.x = 0, .y = SCREEN_WORLD_HEIGHT-50},
-		.end = {.x = SCREEN_WORLD_WIDTH, .y = SCREEN_WORLD_HEIGHT-50}
+		.start = {.x = 10, .y = SCREEN_WORLD_HEIGHT-50},
+		.end = {.x = SCREEN_WORLD_WIDTH-10, .y = SCREEN_WORLD_HEIGHT-50}
 	}};
 	platforms[1] = (PlatformLine){ .line = { 
 		.start = {.x = 0, .y = SCREEN_WORLD_HEIGHT-200 },
@@ -74,6 +74,10 @@ int main() {
 		cam_render.offset.x = extra_width/2;
 		cam_render.offset.y = extra_height/2;
 
+		ClearBackground(BLACK);
+		BeginDrawing();
+		BeginMode2D(cam_render);
+		
 		/** UPDATE **/
 		if (IsKeyDown(KEY_A)) {
 			player.dir.x = -1;
@@ -90,22 +94,20 @@ int main() {
 
 		player.dir.y = 1;
 		player.speed.y += 4;
-		
 
 		player.new_pos.x = player.pos.x + player.speed.x * player.dir.x * dt;
 		player.new_pos.y = player.pos.y + player.speed.y * player.dir.y * dt; // TODO: gravity
 
-
 		/** Collisions **/
-		Vector2 new_pos_ray = Vector2Subtract(player.new_pos, player.pos);
-		player.debug.collision_ray = new_pos_ray;
+		Vector2 motion_ray = Vector2Subtract(player.new_pos, player.pos);
+		player.debug.collision_ray = motion_ray;
+		float angle_back = Vec2GetAngleBetween(player.new_pos, player.pos);
 
-		if (player.speed.x > 0) {
-			int i = 0;
-		}
+		Vec2 motion_ray_normed = Vector2Normalize(motion_ray);
+		Vec2 ray_shoot_start = Vector2Add(player.pos, Vec2MultScalar(motion_ray, -10)); // Should be 1/2 player width
 
 		// Collect collisions
-		Collision collisions[8];
+		Collision collisions[8] = {0};
 		int num_collisions = 0;
 
 		for (int p_idx=0; p_idx<NUM_PLATFORMS; p_idx++) {
@@ -114,47 +116,65 @@ int main() {
 
 			Vector2 collision_source = player.pos; // Anchored to bottom middle
 
-			// Get ray from pos to next pos
-			// If ray hits a line, cast a ray from next pos 
-			// 		If the slope is shallow enough to walk on, up and down
-			// 		If the slope is too steep to walk on ( or is slide type ) cast one left and right
-			//
+			Vec2 platform_vec = Vector2Subtract(platform.line.end, platform.line.start);
+			Vec2 line_normed = Vector2Normalize(platform_vec);
 
-			Vector2 move_col_pos;
-			// TODO: to handle multiple lines we'll need to store all these collisions and take the shortest one
-			if (CheckCollisionLines(player.pos, player.new_pos, platform.line.start, platform.line.end, &move_col_pos)) {
-				// Cast a ray up and down
-				// Later, left and right too, for slopes that make us fall
+			Vec2 line_extension = Vec2MultScalar(platform_vec, 50);
+			Vec2 extended_line_end = Vector2Add(platform.line.end, line_extension);
+			Vec2 extended_line_start = Vector2Add(platform.line.start, Vec2MultScalar(line_extension, -1));
 
+			DrawLineV(platform.line.start, extended_line_start, BLUE);
+			DrawLineV(platform.line.end, extended_line_end, BLUE);
 
-				Vector2 up_ray = {0, -100};
-				Vector2 down_ray = {0, 100};
+			// TODO: shoot the ray from a *lil further back* to catch odd cases where we are exactly on the line
+			Vec2 col;
+			if (CheckCollisionLines(ray_shoot_start, player.new_pos, extended_line_start, extended_line_end, &col)) {
 
-				Vector2 up_col_pos;
-				Vector2 down_col_pos;
-
-				// Okay it looks like the line collision function in Raylib gives you nothing if you are not on a flaot
+				// Lines always act to oppose our motion, so we take the normal that points most back towards us
+				Vec2 platform_normal = Vector2Rotate(line_normed, to_radians(90));
 				
-				if (CheckCollisionLines(player.new_pos, Vector2Add(player.new_pos, up_ray), platform.line.start, platform.line.end, &up_col_pos)) {
-					//player.new_pos.y = up_col_pos.y - 1; // Otherwise the line doesn't work
-					//player.speed.y = 0;
-					Collision up_col = {
-						.dist = Vector2Distance(player.pos, up_col_pos),
-						.collision_pos = up_col_pos,
-						.dir = { .x = 0, .y = -1 }
-					};
-					collisions[num_collisions] = up_col;
-					num_collisions += 1;
-				} else if (CheckCollisionLines(player.new_pos, Vector2Add(player.new_pos, down_ray), platform.line.start, platform.line.end, &down_col_pos)) {
-					Collision down_col = {
-						.dist = Vector2Distance(player.pos, down_col_pos),
-						.collision_pos = down_col_pos,
-						.dir = { .x = 0, .y = 1 }
-					};
-					collisions[num_collisions] = down_col;
-					num_collisions += 1;
+				Vec2 motion_normed = Vector2Normalize(motion_ray);
+				float dot_norm = Vector2DotProduct(motion_normed, platform_normal);
+				float dot_neg_norm = Vector2DotProduct(motion_normed, Vec2MultScalar(platform_normal, -1));
+
+				//printf("Norm %f, Neg. Norm %f\n", dot_norm, dot_neg_norm);
+		
+				if (dot_neg_norm < dot_norm) {
+					platform_normal = Vec2MultScalar(platform_normal, -1);
 				}
-			} 
+				
+				// Debug - draw line normals
+				Vec2 norm_draw_src = Vector2Lerp(platform.line.start, platform.line.end, 0.5);
+
+				DrawLineV(
+					norm_draw_src,
+					Vector2Add(norm_draw_src, Vec2MultScalar(platform_normal, 15)),
+					PINK
+				);
+
+				// Fire 2 rays based on the sign of the hit normal
+				Vec2 vert_dir = { .x=0, .y=1};
+				if (platform_normal.y < 0) { vert_dir.y = -1; };
+
+				// One up or down
+				// One left or right
+				// Keep the shortest collision
+
+				Vec2 vert_ray = Vec2MultScalar(vert_dir, 500);
+				Vec2 vert_col_point;
+				if (CheckCollisionLines(player.new_pos, Vector2Add(player.new_pos, vert_ray), platform.line.start, platform.line.end, &vert_col_point)) {
+					Collision col = {
+						.dist = Vector2Distance(player.new_pos, vert_col_point),
+						.collision_point = vert_col_point,
+						.dir = vert_ray,
+					};
+					collisions[num_collisions] = col;
+					num_collisions+=1;
+				}
+			};
+
+
+
 			
 		}
 
@@ -163,13 +183,13 @@ int main() {
 			Collision shortest_collision = collisions[0];
 			for (int col_idx=1; col_idx<num_collisions; col_idx++) {
 				Collision check_col = collisions[col_idx];
-				if (check_col.dist < shortest_collision.dist) {
+				if (check_col.dist > shortest_collision.dist) {
 					shortest_collision = check_col;
 				}
 			}
 
-			printf("Shortest Collision %f, %f\n", shortest_collision.collision_pos.x, shortest_collision.collision_pos.y);
-			player.new_pos = Vector2Add(shortest_collision.collision_pos, shortest_collision.dir);
+			//printf("Shortest Collision %f, %f\n", shortest_collision.collision_pos.x, shortest_collision.collision_pos.y);
+			player.new_pos = shortest_collision.collision_point;
 
 			player.speed.y = 0;
 		}
@@ -179,9 +199,9 @@ int main() {
 		player.pos = player.new_pos;
 
 		/** DRAW **/
-		ClearBackground(BLACK);
-		BeginDrawing();
-		BeginMode2D(cam_render);
+		//ClearBackground(BLACK);
+		//BeginDrawing();
+		//BeginMode2D(cam_render);
 
 		DrawRectangle(0, 0, SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT, ColorAlpha(BLUE, 0.2));
 

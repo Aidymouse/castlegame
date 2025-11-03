@@ -63,6 +63,7 @@ int main(int argc, char **argv) {
 	nob_cmd_append(&cmd, "src/main.c");
 	nob_cmd_append(&cmd, "src/gameobjects.c");
 	nob_cmd_append(&cmd, "src/collisions.c");
+	nob_cmd_append(&cmd, "src/Vec2.c");
 
 	// Include
 	nob_cmd_append(&cmd, "-Iinclude");
