@@ -23,5 +23,5 @@ void draw_hitbox(Vector2 pos, Hitbox hitbox) {
 	int hitbox_x = pos.x - hitbox.anchor.x;
 	int hitbox_y = pos.y - hitbox.anchor.y;
 
-	DrawRectangleLines(floor(hitbox_x), floor(hitbox_y), hitbox.width, hitbox.height, RED);
+	DrawRectangleLines(hitbox_x, hitbox_y, hitbox.width, hitbox.height, RED);
 }

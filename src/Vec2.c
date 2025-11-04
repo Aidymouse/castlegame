@@ -48,6 +48,55 @@ Vector2 Vec2MultScalar(Vec2 v, float val) {
 	return v;
 }
 
+/* Extends a vector along it's direction
+ *  end -> 1 = end, 0 = both, -1 = start
+ *  */
+LineSegment LineSegExtend(LineSegment l, int end, float length) {
+
+	Vec2 line_ray = Vector2Subtract(l.end, l.start);
+	Vec2 line_dir = Vector2Normalize(line_ray);
+
+	LineSegment new_l = l;
+
+	if (end == -1 || end == 0) {
+		new_l.start = Vector2Add(l.start, Vec2MultScalar(line_dir, -length));
+	}
+
+	if (end == 1 || end == 0) {
+		new_l.end = Vector2Add(l.end, Vec2MultScalar(line_dir, length));
+	}
+	
+	return new_l;
+}
+
+Vector2 Vec2Neg(Vec2 v) {
+	return Vec2MultScalar(v, -1);
+}
+
+
+bool Vec2LinesCollide(Vec2 start1, Vec2 end1, Vec2 start2, Vec2 end2, Vec2 *collision_point) {
+
+	float x1 = start1.x; float y1 = start1.y;
+	float x2 = end1.x; float y2 = end1.y;
+	float x3 = start2.x; float y3 = start2.y;
+	float x4 = end2.x; float y4 = end2.y;
+
+	float uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+	float uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+
+	if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+		float intersectionX = x1 + (uA * (x2-x1));
+		float intersectionY = y1 + (uA * (y2-y1));
+
+		collision_point->x = intersectionX;
+		collision_point->y = intersectionY;
+
+		return true;
+	}
+	return false;
+
+}
+
 /*
 Vector2 Vec2Add(Vector2 v1, Vector2 v2) {
 	Vector2 added;

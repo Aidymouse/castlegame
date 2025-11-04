@@ -1,2 +1,43 @@
+CT_GROUND	include/collisions.h	/^	CT_GROUND=1,$/;"	e	enum:CollisionType
+CT_SLOPE	include/collisions.h	/^	CT_SLOPE=0,$/;"	e	enum:CollisionType
+CT_WALL	include/collisions.h	/^	CT_WALL=2,$/;"	e	enum:CollisionType
+Collision	include/collisions.h	/^typedef struct Collision {$/;"	s
+Collision	include/collisions.h	/^} Collision;$/;"	t	typeref:struct:Collision
+CollisionType	include/collisions.h	/^typedef enum CollisionType {$/;"	g
+CollisionType	include/collisions.h	/^} CollisionType;$/;"	t	typeref:enum:CollisionType
+DVec2	include/DVec2.h	/^typedef struct DVec2 {$/;"	s
+DVec2	include/DVec2.h	/^} DVec2;$/;"	t	typeref:struct:DVec2
+DVec2Add	include/DVec2.h	/^inline DVec2 DVec2Add(DVec2 v1, DVec2 v2) {$/;"	f	typeref:typename:DVec2
+DVec2LinesCollide	include/DVec2.h	/^inline bool DVec2LinesCollide(DVec2 start1, DVec2 end1, DVec2 start2, DVec2 end2, DVec2 *collisi/;"	f	typeref:typename:bool
+DVec2Magnitude	include/DVec2.h	/^inline double DVec2Magnitude(DVec2 v) {$/;"	f	typeref:typename:double
+DVec2MultScalar	include/DVec2.h	/^inline DVec2 DVec2MultScalar(DVec2 v, double scalar) {$/;"	f	typeref:typename:DVec2
+DVec2Normalize	include/DVec2.h	/^inline DVec2 DVec2Normalize(DVec2 v) {$/;"	f	typeref:typename:DVec2
+DVec2Sub	include/DVec2.h	/^inline DVec2 DVec2Sub(DVec2 v1, DVec2 v2) {$/;"	f	typeref:typename:DVec2
+LineSegExtend	src/Vec2.c	/^LineSegment LineSegExtend(LineSegment l, int end, float length) {$/;"	f	typeref:typename:LineSegment
+LineSegment	include/collisions.h	/^typedef struct LineSegment {$/;"	s
+LineSegment	include/collisions.h	/^} LineSegment;$/;"	t	typeref:struct:LineSegment
+RayCollisionInfo	include/collisions.h	/^typedef struct RayCollisionInfo {$/;"	s
+RayCollisionInfo	include/collisions.h	/^} RayCollisionInfo;$/;"	t	typeref:struct:RayCollisionInfo
+Vec2	include/Vec2.h	/^#define Vec2 /;"	d
+Vec2GetAngle	src/Vec2.c	/^float Vec2GetAngle(Vector2 v) {$/;"	f	typeref:typename:float
+Vec2GetAngleBetween	src/Vec2.c	/^float Vec2GetAngleBetween(Vec2 A, Vec2 B) {$/;"	f	typeref:typename:float
+Vec2LinesCollide	src/Vec2.c	/^bool Vec2LinesCollide(Vec2 start1, Vec2 end1, Vec2 start2, Vec2 end2, Vec2 *collision_point) {$/;"	f	typeref:typename:bool
+Vec2MultScalar	src/Vec2.c	/^Vector2 Vec2MultScalar(Vec2 v, float val) {$/;"	f	typeref:typename:Vector2
+Vec2Neg	src/Vec2.c	/^Vector2 Vec2Neg(Vec2 v) {$/;"	f	typeref:typename:Vector2
 WINDOW_TITLE	src/main.c	/^#define WINDOW_TITLE /;"	d	file:
+_COLLISIONS_H_	include/collisions.h	/^#define _COLLISIONS_H_$/;"	d
+_DVEC2_H_	include/DVec2.h	/^#define _DVEC2_H_$/;"	d
+_VEC2_H_	include/Vec2.h	/^#define _VEC2_H_$/;"	d
+col_point	include/collisions.h	/^	Vector2 col_point;$/;"	m	struct:Collision	typeref:typename:Vector2
+collision_point	include/collisions.h	/^	Vector2 collision_point;$/;"	m	struct:RayCollisionInfo	typeref:typename:Vector2
+dist	include/collisions.h	/^	float dist;$/;"	m	struct:Collision	typeref:typename:float
+end	include/collisions.h	/^	Vector2 end;$/;"	m	struct:LineSegment	typeref:typename:Vector2
+get_angle_distance	src/Vec2.c	/^float get_angle_distance(float angle1, float angle2) {$/;"	f	typeref:typename:float
+hit_line	include/collisions.h	/^	LineSegment hit_line;$/;"	m	struct:Collision	typeref:typename:LineSegment
 main	src/main.c	/^int main() {$/;"	f	typeref:typename:int
+start	include/collisions.h	/^	Vector2 start;$/;"	m	struct:LineSegment	typeref:typename:Vector2
+to_degrees	src/Vec2.c	/^double to_degrees(double radians) {$/;"	f	typeref:typename:double
+to_radians	src/Vec2.c	/^double to_radians(double degrees) {$/;"	f	typeref:typename:double
+type	include/collisions.h	/^	CollisionType type;$/;"	m	struct:Collision	typeref:typename:CollisionType
+x	include/DVec2.h	/^	double x;$/;"	m	struct:DVec2	typeref:typename:double
+y	include/DVec2.h	/^	double y;$/;"	m	struct:DVec2	typeref:typename:double

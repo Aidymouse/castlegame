@@ -2,8 +2,8 @@
 #include <math.h>
 #include "defines/world.h"
 #include "defines/player.h"
-
 #include "structs/gameobjects.h"
+#include "DVec2.h"
 
 #include "gameobjects.h"
 #include "collisions.h"
@@ -31,7 +31,11 @@ int main() {
 		.end = {.x = SCREEN_WORLD_WIDTH-10, .y = SCREEN_WORLD_HEIGHT-50}
 	}};
 	//platforms[1] = (PlatformLine){ .line = { .start = {.x = 600, .y = SCREEN_WORLD_HEIGHT }, .end = {.x = 600, .y = 0} }};
-	platforms[1] = (PlatformLine){ .line = { .start = {.x = 200, .y = SCREEN_WORLD_HEIGHT }, .end = {.x = 1000, .y = SCREEN_WORLD_HEIGHT-600} }};
+	platforms[1] = (PlatformLine){ .line = { .start = {.x = 400, .y = 400 }, .end = {.x = 800, .y = 200} }};
+	platforms[2] = (PlatformLine){ .line = { .start = {.x = 700, .y = 600 }, .end = {.x = 700, .y = 0} }};
+
+	platforms[3] = (PlatformLine){ .line = { .start = {.x = 400, .y = 400 }, .end = {.x = 0, .y = 200} }};
+	platforms[4] = (PlatformLine){ .line = { .start = {.x = 100, .y = 600 }, .end = {.x = 100, .y = 0} }};
 	/*
 	platforms[1] = (PlatformLine){ .line = { 
 		.start = {.x = 0, .y = SCREEN_WORLD_HEIGHT-200 },
@@ -45,10 +49,10 @@ int main() {
 //(Vector2){0, SCREEN_WORLD_HEIGHT-50}, .end = (Vector2){SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT-50} };
 	//platforms[1] = (PlatformLine){ .start = (Vector2){0, SCREEN_WORLD_HEIGHT-200}, .end = (Vector2){100, SCREEN_WORLD_HEIGHT} };
 	//platforms[2] = (PlatformLine){ .start = (Vector2){SCREEN_WORLD_WIDTH-300, SCREEN_WORLD_HEIGHT}, .end = (Vector2){SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT-70} };
-	const int NUM_PLATFORMS = 2;
+	const int NUM_PLATFORMS = 5;
 
 	Player player = {
-		.pos = { .x = 200, .y = 200 },
+		.pos = { .x = 400, .y = 200 },
 		.hitbox = {
 			.anchor = { .x = 10, .y = 36 },
 			.width = 20,
@@ -57,6 +61,7 @@ int main() {
 	};
 
 
+	Vec2 latest_wall = { .x = 0, .y =0};
 
     while (!WindowShouldClose()) {
 		//dt = GetFrameTime();
@@ -109,8 +114,9 @@ int main() {
 		Collision collisions[8] = {0};
 		int num_collisions = 0;
 
-		Vec2 x_dir = { 1, 0 };
+		Vec2 x_dir = { 0, 0 };
 		if (motion_ray.x < 0) { x_dir.x = -1; }
+		if (motion_ray.x > 0) { x_dir.x = 1; }
 		//Vec2 player_br = Vector2Add(player.pos, (Vector2){player.hitbox.width/2, 0});
 		//Vec2 player_tr = Vector2Add(player.pos, (Vector2){player.hitbox.width/2, -player.hitbox.height});
 
@@ -123,8 +129,6 @@ int main() {
 		//player.debug.collision_ray = player_new_x;
 		DrawLineV(player.new_pos, player_new_x, PINK);
 
-		// Remember these circles will be a little behind what you see
-
 		// This method handles X and Y collisions seperately
 		for (int p_idx=0; p_idx<NUM_PLATFORMS; p_idx++) {
 
@@ -136,65 +140,69 @@ int main() {
 			Vec2 line_normed = Vector2Normalize(platform_vec);
 
 			Vec2 bottom_col;
-			bool bottom_motion_ray_touch = CheckCollisionLines(player.pos, player_new_x, platform.line.start, platform.line.end, &bottom_col);
-
-		
-			/*
-			if (lines_touch && bottom_motion_ray_touch) {
-				// Probably an up slope
-				// Cast a ray from new br
-			} else if (bottom_motion_ray_touch) {
-				// Only bottom touchs, probably a really shallow slope
-			} else if (lines_touch) {
-				// Most likely a long platform, but one that the bottom motion ray doesn't touch? Very strange..
-			}	
-			*/
+			bool bottom_motion_ray_touch = Vec2LinesCollide( Vector2Add(player.pos, Vec2MultScalar(x_dir, -5)), player_new_x, platform.line.start, platform.line.end, &bottom_col);
 
 			if (bottom_motion_ray_touch) {
+
+				// If the point of intersection is behind the new pos, then throw it away. The extended ray is only for detecting collisions in the direction of motion
+				bool behind = false;
+				if (x_dir.x < 0 && bottom_col.x >= player.pos.x) {
+					behind = true;
+				} else if (x_dir.x > 0 && bottom_col.x <= player.pos.x) {
+					behind = true;
+				}
+
 				printf("Ray touches\n");
 				// Cast a ray up from bottom
-				float dist_col_to_new = Vector2Distance(bottom_col, player_new_x);
+				float dist_col_to_new = Vector2Distance(bottom_col, player_new_x); // This distance is what controls what slopes we can walk up
 				Vec2 up_ray = {0, -dist_col_to_new};
 				Vec2 up_col;
 
-				if (CheckCollisionLines(player_new_x, Vector2Add(player_new_x, up_ray), platform.line.start, platform.line.end, &up_col)) {
-					//printf("Go up\n");
-					// Go up da slope
-					player.new_pos = (Vec2){up_col.x, up_col.y-1};
-					Vec2 desired = { .x = up_col.x, .y = up_col.y-1 };
-					Collision col = {
-						.desired_pos = desired,
-						.dist = Vector2Distance(player.new_pos, desired),
-						.type=CT_SLOPE,
-					};
-					collisions[num_collisions] = col;
-					num_collisions++;
-					// IMPORTANT - this needs to count as a floor hit too
-				} else {
-					Vec2 desired = bottom_col;
-					Collision col = {
-						.desired_pos = desired,
-						.dist = Vector2Distance(player.new_pos, desired),
-						.type=CT_WALL,
-					};
-					collisions[num_collisions] = col;
-					num_collisions++;
-					//player.new_pos.x = Vector2Add(bottom_col, Vec2MultScalar(x_dir, -1)).x;
+				if (!behind) {
+					if (Vec2LinesCollide(player_new_x, Vector2Add(player_new_x, up_ray), platform.line.start, platform.line.end, &up_col)) {
+						//Vec2 desired = { .x = up_col.x, .y = up_col.y-1 };
+						Vec2 desired = up_col;
+						Collision col = {
+							.col_point = desired,
+							.dist = Vector2Distance(player.pos, desired),
+							.type=CT_SLOPE,
+							.hit_line=platform.line
+						};
+						collisions[num_collisions] = col;
+						num_collisions++;
+						// IMPORTANT - this needs to count as a floor hit too
+					} else {
+						//Vec2 desired = Vector2Add(bottom_col, Vec2MultScalar(x_dir, -1));
+						Vec2 desired = bottom_col;
+						// TODO: From the walls impact point we should probably cast down to out feet to make sure we're not in the floor now
+						Collision col = {
+							.col_point = desired,
+							.dist = Vector2Distance(player.pos, desired),
+							.type=CT_WALL,
+							.hit_line=platform.line
+						};
+						collisions[num_collisions] = col;
+						num_collisions++;
+						//player.new_pos.x = Vector2Add(bottom_col, Vec2MultScalar(x_dir, -1)).x;
+					}
 				}
+			
 			}
 
 
 			// Y Collision - very basic
+			// TODO: have this account for steep slopes by casting sideways like the ramp code does
 			Vec2 down_ray = { 0, motion_ray.y };
 			Vec2 down_col;
-			if (CheckCollisionLines(Vector2Add(player.pos, (Vec2){0, -5}), player_new_y, platform.line.start, platform.line.end, &down_col)) {
+			if (Vec2LinesCollide(Vector2Add(player.pos, (Vec2){0, -5}), player_new_y, platform.line.start, platform.line.end, &down_col)) {
 				//player.new_pos.y = down_col.y-1;
 				//player.speed.y = 0;
 				Vec2 desired = { .x = player.new_pos.x, .y = down_col.y };
 				Collision collo = {
-					.desired_pos = desired,
-					.dist = Vector2Distance(player.new_pos, desired),
-					.type=CT_GROUND
+					.col_point = desired,
+					.dist = Vector2Distance(player.pos, desired),
+					.type=CT_GROUND,
+					.hit_line=platform.line
 				};
 				collisions[num_collisions] = collo;
 				num_collisions++;
@@ -221,7 +229,6 @@ int main() {
 				case CT_SLOPE: {
 					Collision *slope_col = by_type[CT_SLOPE];
 					if (slope_col == NULL || slope_col->dist < col->dist) {
-
 						by_type[CT_SLOPE] = col;
 					}
 					break;
@@ -245,20 +252,47 @@ int main() {
 			}
 
 
-
 		
 
 		bool hit_ground = false;
-		if (by_type[CT_WALL] != NULL) {
-			player.new_pos = by_type[CT_WALL]->desired_pos;
+		bool hit_wall = false;
+		bool hit_slope = false;
 
-		} else if (by_type[CT_SLOPE] != NULL) {
+		// We want to handle a X collision and a Y collision
+
+		if (by_type[CT_SLOPE] != NULL) {
 			printf("Slope Collision\n");
-			player.new_pos = by_type[CT_SLOPE]->desired_pos;
+			player.new_pos.y = by_type[CT_SLOPE]->col_point.y;
 
 			hit_ground = true;
-		} else if (by_type[CT_GROUND] != NULL) {
-			player.new_pos = by_type[CT_GROUND]->desired_pos;
+			hit_slope = true;
+		} 
+
+
+		if (by_type[CT_WALL] != NULL) {
+			Collision *wall_col = by_type[CT_WALL];
+			player.new_pos.x = by_type[CT_WALL]->col_point.x - x_dir.x;
+			hit_wall = true;
+			printf("%f, %f\n", wall_col->col_point.x, wall_col->col_point.y);
+			latest_wall = wall_col->col_point;
+
+			// Cast a ray down and correct to the ground, in case we're on a slope and have moved up but then hit a wall
+			// Cast ray from top to Y of player (pre collision pos) pos
+			if (hit_slope) {
+				LineSegment slope_line = by_type[CT_SLOPE]->hit_line;
+				Vec2 slope_cast_point;
+				if (Vec2LinesCollide(player.new_pos, Vector2Add(player.new_pos, (Vec2){0, player.hitbox.height}), slope_line.start, slope_line.end, &slope_cast_point)) {
+					player.new_pos.y = slope_cast_point.y;
+					hit_ground = true;
+				}
+			}
+
+		} 
+
+
+
+		if (by_type[CT_GROUND] != NULL && !hit_ground) {
+			player.new_pos.y = by_type[CT_GROUND]->col_point.y;
 
 			hit_ground = true;
 		}
@@ -266,6 +300,10 @@ int main() {
 
 		if (hit_ground) {
 			player.speed.y = 0;
+		}
+
+		if (hit_wall) {
+			player.speed.x = 0;
 		}
 
 		
@@ -289,8 +327,11 @@ int main() {
 		// Player
 		draw_hitbox(player.pos, player.hitbox);
 
+		DrawText(TextFormat("%f, %f", player.pos.x, player.pos.y), 0, 0, 10, WHITE);
 
 		DrawLineV(player.pos, Vector2Add(player.pos, player.debug.collision_ray), PINK);
+
+		DrawCircleV(latest_wall, 2, RED);
 
 		EndMode2D();
 		EndDrawing();

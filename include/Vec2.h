@@ -2,6 +2,7 @@
 #define _VEC2_H_
 
 #include "raylib.h"
+#include "collisions.h"
 #include <math.h>
 
 #define Vec2 Vector2
@@ -20,9 +21,14 @@ float get_angle_distance(float angle1, float angle2);
 float Vec2GetAngle(Vector2 v);
 float Vec2GetAngleBetween(Vector2 A, Vector2 B);
 Vector2 Vec2MultScalar(Vec2 v, float val);
+Vector2 Vec2Neg(Vec2 v);
+LineSegment LineSegExtend(LineSegment l, int end, float length);
+bool Vec2LinesCollide(Vec2 start1, Vec2 end1, Vec2 start2, Vec2 end2, Vec2 *collision_point);
 //float Vec2GetMagnitude(Vector2 v);
 //Vector2 Vec2Normalize(Vector2 v);
 //Vector2 Vec2Rotate(Vector2 v, float degrees);
 //Vector2 GetVec2FromAngle(float degrees);
+//
+
 
 #endif
