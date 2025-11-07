@@ -38,6 +38,9 @@ typedef struct Collision {
 bool get_shortest_ray_collision_with_line_segment_from_many_points(Vector2 *points, int num_points, Vector2 ray, LineSegment line_segment, RayCollisionInfo *shortest_collision);
 
 
+
+//void get_collisions(Hitbox hitbox, Vec2 pos);
+
 #endif
 
 

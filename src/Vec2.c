@@ -97,6 +97,25 @@ bool Vec2LinesCollide(Vec2 start1, Vec2 end1, Vec2 start2, Vec2 end2, Vec2 *coll
 
 }
 
+bool LinesCollideD(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, Vec2 *collision_point) {
+
+
+	double uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+	double uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+
+	if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+		double intersectionX = x1 + (uA * (x2-x1));
+		double intersectionY = y1 + (uA * (y2-y1));
+
+		collision_point->x = (float)intersectionX;
+		collision_point->y = (float)intersectionY;
+
+		return true;
+	}
+	return false;
+
+}
+
 /*
 Vector2 Vec2Add(Vector2 v1, Vector2 v2) {
 	Vector2 added;

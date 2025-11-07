@@ -32,7 +32,7 @@ int main() {
 	}};
 	//platforms[1] = (PlatformLine){ .line = { .start = {.x = 600, .y = SCREEN_WORLD_HEIGHT }, .end = {.x = 600, .y = 0} }};
 	platforms[1] = (PlatformLine){ .line = { .start = {.x = 400, .y = 400 }, .end = {.x = 800, .y = 200} }};
-	platforms[2] = (PlatformLine){ .line = { .start = {.x = 700, .y = 600 }, .end = {.x = 700, .y = 0} }};
+	platforms[2] = (PlatformLine){ .line = { .start = {.x = 700, .y = 600 }, .end = {.x = 700, .y = 0} }}; // For weird reasons the line collision algo isn't perfect for this part. Maybe it's a rounding error?
 
 	platforms[3] = (PlatformLine){ .line = { .start = {.x = 400, .y = 400 }, .end = {.x = 0, .y = 200} }};
 	platforms[4] = (PlatformLine){ .line = { .start = {.x = 100, .y = 600 }, .end = {.x = 100, .y = 0} }};
@@ -140,8 +140,16 @@ int main() {
 			Vec2 line_normed = Vector2Normalize(platform_vec);
 
 			Vec2 bottom_col;
-			bool bottom_motion_ray_touch = Vec2LinesCollide( Vector2Add(player.pos, Vec2MultScalar(x_dir, -5)), player_new_x, platform.line.start, platform.line.end, &bottom_col);
+			//bool bottom_motion_ray_touch = Vec2LinesCollide( Vector2Add(player.pos, Vec2MultScalar(x_dir, -5)), player_new_x, platform.line.start, platform.line.end, &bottom_col);
 
+			Vec2 bottom_start = Vector2Add(player.pos, Vec2MultScalar(x_dir, -5));
+			bool bottom_motion_ray_touch = LinesCollideD( 
+				bottom_start.x, bottom_start.y,
+				player_new_x.x, player_new_x.y,
+				platform.line.start.x, platform.line.start.y,
+				platform.line.end.x, platform.line.end.y,
+				&bottom_col
+			);
 			if (bottom_motion_ray_touch) {
 
 				// If the point of intersection is behind the new pos, then throw it away. The extended ray is only for detecting collisions in the direction of motion
@@ -152,7 +160,7 @@ int main() {
 					behind = true;
 				}
 
-				printf("Ray touches\n");
+				//printf("Ray touches\n");
 				// Cast a ray up from bottom
 				float dist_col_to_new = Vector2Distance(bottom_col, player_new_x); // This distance is what controls what slopes we can walk up
 				Vec2 up_ray = {0, -dist_col_to_new};
@@ -271,9 +279,9 @@ int main() {
 
 		if (by_type[CT_WALL] != NULL) {
 			Collision *wall_col = by_type[CT_WALL];
-			player.new_pos.x = by_type[CT_WALL]->col_point.x - x_dir.x;
+			player.new_pos.x = by_type[CT_WALL]->col_point.x - (x_dir.x/2);
 			hit_wall = true;
-			printf("%f, %f\n", wall_col->col_point.x, wall_col->col_point.y);
+			//printf("%f, %f\n", wall_col->col_point.x, wall_col->col_point.y);
 			latest_wall = wall_col->col_point;
 
 			// Cast a ray down and correct to the ground, in case we're on a slope and have moved up but then hit a wall
