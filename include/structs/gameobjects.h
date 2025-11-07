@@ -2,26 +2,20 @@
 #define _STRUCTS_GAMEOBJECTS_H_
 
 #include "raylib.h"
-#include "collisions.h"
 
-/** The line segment and other metadata about it's type **/
-typedef struct PlatformLine {
-	LineSegment line;
-	//Vector2 start;
-	//Vector2 end;
-} PlatformLine;
 
 /** Data for Entities **/
 typedef struct EntityDebugData {
-	/* Ray shot out during collision detection */
-	Vector2 collision_ray;
-	Vector2 col_up_ray;
-	Vector2 col_down_ray;
+	/* Vector of the entities current motion */
+	Vector2 motion_ray;
 } EntityDebugData;
 
 typedef struct Hitbox {
+	/* Technically an inverse offset from the players position. Where the pin goes through the hitbox to align it with the player (the pin is always aligned with the players position) */
 	Vector2 anchor;
+	/* Width of the hitbox */
 	int width;
+	/* Height of the hitbox */
 	int height;
 } Hitbox;
 

@@ -48,26 +48,6 @@ Vector2 Vec2MultScalar(Vec2 v, float val) {
 	return v;
 }
 
-/* Extends a vector along it's direction
- *  end -> 1 = end, 0 = both, -1 = start
- *  */
-LineSegment LineSegExtend(LineSegment l, int end, float length) {
-
-	Vec2 line_ray = Vector2Subtract(l.end, l.start);
-	Vec2 line_dir = Vector2Normalize(line_ray);
-
-	LineSegment new_l = l;
-
-	if (end == -1 || end == 0) {
-		new_l.start = Vector2Add(l.start, Vec2MultScalar(line_dir, -length));
-	}
-
-	if (end == 1 || end == 0) {
-		new_l.end = Vector2Add(l.end, Vec2MultScalar(line_dir, length));
-	}
-	
-	return new_l;
-}
 
 Vector2 Vec2Neg(Vec2 v) {
 	return Vec2MultScalar(v, -1);
