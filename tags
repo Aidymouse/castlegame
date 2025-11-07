@@ -1,3 +1,43 @@
+!_TAG_FIELD_DESCRIPTION!C++	name	/aliased names/
+!_TAG_KIND_DESCRIPTION!C	d,macro	/macro definitions/
+!_TAG_KIND_DESCRIPTION!C	e,enumerator	/enumerators (values inside an enumeration)/
+!_TAG_KIND_DESCRIPTION!C	f,function	/function definitions/
+!_TAG_KIND_DESCRIPTION!C	g,enum	/enumeration names/
+!_TAG_KIND_DESCRIPTION!C	h,header	/included header files/
+!_TAG_KIND_DESCRIPTION!C	m,member	/struct, and union members/
+!_TAG_KIND_DESCRIPTION!C	s,struct	/structure names/
+!_TAG_KIND_DESCRIPTION!C	t,typedef	/typedefs/
+!_TAG_KIND_DESCRIPTION!C	u,union	/union names/
+!_TAG_KIND_DESCRIPTION!C	v,variable	/variable definitions/
+!_TAG_KIND_DESCRIPTION!C++	M,module	/modules/
+!_TAG_KIND_DESCRIPTION!C++	P,partition	/partitions/
+!_TAG_KIND_DESCRIPTION!C++	c,class	/classes/
+!_TAG_KIND_DESCRIPTION!C++	d,macro	/macro definitions/
+!_TAG_KIND_DESCRIPTION!C++	e,enumerator	/enumerators (values inside an enumeration)/
+!_TAG_KIND_DESCRIPTION!C++	f,function	/function definitions/
+!_TAG_KIND_DESCRIPTION!C++	g,enum	/enumeration names/
+!_TAG_KIND_DESCRIPTION!C++	h,header	/included header files/
+!_TAG_KIND_DESCRIPTION!C++	m,member	/class, struct, and union members/
+!_TAG_KIND_DESCRIPTION!C++	n,namespace	/namespaces/
+!_TAG_KIND_DESCRIPTION!C++	s,struct	/structure names/
+!_TAG_KIND_DESCRIPTION!C++	t,typedef	/typedefs/
+!_TAG_KIND_DESCRIPTION!C++	u,union	/union names/
+!_TAG_KIND_DESCRIPTION!C++	v,variable	/variable definitions/
+!_TAG_PARSER_VERSION!C	1.1	/current.age/
+!_TAG_PARSER_VERSION!C++	1.1	/current.age/
+!_TAG_ROLE_DESCRIPTION!C!function	foreigndecl	/declared in foreign languages/
+!_TAG_ROLE_DESCRIPTION!C!header	local	/local header/
+!_TAG_ROLE_DESCRIPTION!C!header	system	/system header/
+!_TAG_ROLE_DESCRIPTION!C!macro	undef	/undefined/
+!_TAG_ROLE_DESCRIPTION!C!struct	foreigndecl	/declared in foreign languages/
+!_TAG_ROLE_DESCRIPTION!C++!header	exported	/exported with "exported imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!header	imported	/imported with "imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!header	local	/local header/
+!_TAG_ROLE_DESCRIPTION!C++!header	system	/system header/
+!_TAG_ROLE_DESCRIPTION!C++!macro	undef	/undefined/
+!_TAG_ROLE_DESCRIPTION!C++!module	imported	/imported with "imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!module	partOwner	/used for specifying a partition/
+!_TAG_ROLE_DESCRIPTION!C++!partition	imported	/imported with "imported ..."/
 CT_GROUND	include/collisions.h	/^	CT_GROUND=1,$/;"	e	enum:CollisionType
 CT_SLOPE	include/collisions.h	/^	CT_SLOPE=0,$/;"	e	enum:CollisionType
 CT_WALL	include/collisions.h	/^	CT_WALL=2,$/;"	e	enum:CollisionType
@@ -13,11 +53,30 @@ DVec2Magnitude	include/DVec2.h	/^inline double DVec2Magnitude(DVec2 v) {$/;"	f	t
 DVec2MultScalar	include/DVec2.h	/^inline DVec2 DVec2MultScalar(DVec2 v, double scalar) {$/;"	f	typeref:typename:DVec2
 DVec2Normalize	include/DVec2.h	/^inline DVec2 DVec2Normalize(DVec2 v) {$/;"	f	typeref:typename:DVec2
 DVec2Sub	include/DVec2.h	/^inline DVec2 DVec2Sub(DVec2 v1, DVec2 v2) {$/;"	f	typeref:typename:DVec2
-LineSegExtend	src/Vec2.c	/^LineSegment LineSegExtend(LineSegment l, int end, float length) {$/;"	f	typeref:typename:LineSegment
+EntityDebugData	include/structs/gameobjects.h	/^typedef struct EntityDebugData {$/;"	s
+EntityDebugData	include/structs/gameobjects.h	/^} EntityDebugData;$/;"	t	typeref:struct:EntityDebugData
+Hitbox	include/structs/gameobjects.h	/^typedef struct Hitbox {$/;"	s
+Hitbox	include/structs/gameobjects.h	/^} Hitbox;$/;"	t	typeref:struct:Hitbox
 LineSegment	include/collisions.h	/^typedef struct LineSegment {$/;"	s
 LineSegment	include/collisions.h	/^} LineSegment;$/;"	t	typeref:struct:LineSegment
+LinesCollideD	src/Vec2.c	/^bool LinesCollideD(double x1, double y1, double x2, double y2, double x3, double y3, double x4, /;"	f	typeref:typename:bool
+MapScreen	include/structs/map.h	/^typedef int[SCREEN_TILES_HEIGHT][SCREEN_TILES_WIDTH] MapScreen;$/;"	t	typeref:typename:int[SCREEN_TILES_HEIGHT][SCREEN_TILES_WIDTH]
+NOB_IMPLEMENTATION	nob.c	/^#define NOB_IMPLEMENTATION$/;"	d	file:
+PROGRAM_NAME	nob.c	/^#define PROGRAM_NAME /;"	d	file:
+Player	include/structs/gameobjects.h	/^typedef struct Player {$/;"	s
+Player	include/structs/gameobjects.h	/^} Player;$/;"	t	typeref:struct:Player
 RayCollisionInfo	include/collisions.h	/^typedef struct RayCollisionInfo {$/;"	s
 RayCollisionInfo	include/collisions.h	/^} RayCollisionInfo;$/;"	t	typeref:struct:RayCollisionInfo
+SCREEN_TILES_HEIGHT	include/defines/map.h	/^#define SCREEN_TILES_HEIGHT /;"	d
+SCREEN_TILES_WIDTH	include/defines/map.h	/^#define SCREEN_TILES_WIDTH /;"	d
+TARGET_UNIX	nob.c	/^#define TARGET_UNIX$/;"	d	file:
+TF_DEADLY	include/structs/map.h	/^	TF_DEADLY=4,$/;"	e	enum:TileFlags
+TF_SLOPE	include/structs/map.h	/^	TF_SLOPE=2,$/;"	e	enum:TileFlags
+TF_SOLID	include/structs/map.h	/^	TF_SOLID=1,$/;"	e	enum:TileFlags
+TILE_SIZE	include/defines/map.h	/^#define TILE_SIZE /;"	d
+Tile	include/structs/map.h	/^typedef struct Tile {$/;"	s
+TileFlags	include/structs/map.h	/^typedef enum TileFlags {$/;"	g
+TileFlags	include/structs/map.h	/^} TileFlags;$/;"	t	typeref:enum:TileFlags
 Vec2	include/Vec2.h	/^#define Vec2 /;"	d
 Vec2GetAngle	src/Vec2.c	/^float Vec2GetAngle(Vector2 v) {$/;"	f	typeref:typename:float
 Vec2GetAngleBetween	src/Vec2.c	/^float Vec2GetAngleBetween(Vec2 A, Vec2 B) {$/;"	f	typeref:typename:float
@@ -26,18 +85,34 @@ Vec2MultScalar	src/Vec2.c	/^Vector2 Vec2MultScalar(Vec2 v, float val) {$/;"	f	ty
 Vec2Neg	src/Vec2.c	/^Vector2 Vec2Neg(Vec2 v) {$/;"	f	typeref:typename:Vector2
 WINDOW_TITLE	src/main.c	/^#define WINDOW_TITLE /;"	d	file:
 _COLLISIONS_H_	include/collisions.h	/^#define _COLLISIONS_H_$/;"	d
+_DEF_MAP_H_	include/defines/map.h	/^#define _DEF_MAP_H_$/;"	d
 _DVEC2_H_	include/DVec2.h	/^#define _DVEC2_H_$/;"	d
+_STRUCTS_GAMEOBJECTS_H_	include/structs/gameobjects.h	/^#define _STRUCTS_GAMEOBJECTS_H_$/;"	d
 _VEC2_H_	include/Vec2.h	/^#define _VEC2_H_$/;"	d
+anchor	include/structs/gameobjects.h	/^	Vector2 anchor;$/;"	m	struct:Hitbox	typeref:typename:Vector2
 col_point	include/collisions.h	/^	Vector2 col_point;$/;"	m	struct:Collision	typeref:typename:Vector2
 collision_point	include/collisions.h	/^	Vector2 collision_point;$/;"	m	struct:RayCollisionInfo	typeref:typename:Vector2
+debug	include/structs/gameobjects.h	/^	EntityDebugData debug;$/;"	m	struct:Player	typeref:typename:EntityDebugData
+dir	include/structs/gameobjects.h	/^	Vector2 dir; $/;"	m	struct:Player	typeref:typename:Vector2
 dist	include/collisions.h	/^	float dist;$/;"	m	struct:Collision	typeref:typename:float
 end	include/collisions.h	/^	Vector2 end;$/;"	m	struct:LineSegment	typeref:typename:Vector2
+flags	include/structs/map.h	/^	int flags;$/;"	m	struct:Tile	typeref:typename:int
 get_angle_distance	src/Vec2.c	/^float get_angle_distance(float angle1, float angle2) {$/;"	f	typeref:typename:float
+height	include/structs/gameobjects.h	/^	int height;$/;"	m	struct:Hitbox	typeref:typename:int
 hit_line	include/collisions.h	/^	LineSegment hit_line;$/;"	m	struct:Collision	typeref:typename:LineSegment
+hitbox	include/structs/gameobjects.h	/^	Hitbox hitbox;$/;"	m	struct:Player	typeref:typename:Hitbox
+hitbox	include/structs/map.h	/^	Hitbox hitbox;$/;"	m	struct:Tile	typeref:typename:Hitbox
+id	include/structs/map.h	/^	int id; \/\/ Maps are stored as grids of tile ids$/;"	m	struct:Tile	typeref:typename:int
+main	nob.c	/^int main(int argc, char **argv) {$/;"	f	typeref:typename:int
 main	src/main.c	/^int main() {$/;"	f	typeref:typename:int
+motion_ray	include/structs/gameobjects.h	/^	Vector2 motion_ray;$/;"	m	struct:EntityDebugData	typeref:typename:Vector2
+new_pos	include/structs/gameobjects.h	/^	Vector2 new_pos; $/;"	m	struct:Player	typeref:typename:Vector2
+pos	include/structs/gameobjects.h	/^	Vector2 pos;$/;"	m	struct:Player	typeref:typename:Vector2
+speed	include/structs/gameobjects.h	/^	Vector2 speed;$/;"	m	struct:Player	typeref:typename:Vector2
 start	include/collisions.h	/^	Vector2 start;$/;"	m	struct:LineSegment	typeref:typename:Vector2
 to_degrees	src/Vec2.c	/^double to_degrees(double radians) {$/;"	f	typeref:typename:double
 to_radians	src/Vec2.c	/^double to_radians(double degrees) {$/;"	f	typeref:typename:double
 type	include/collisions.h	/^	CollisionType type;$/;"	m	struct:Collision	typeref:typename:CollisionType
+width	include/structs/gameobjects.h	/^	int width;$/;"	m	struct:Hitbox	typeref:typename:int
 x	include/DVec2.h	/^	double x;$/;"	m	struct:DVec2	typeref:typename:double
 y	include/DVec2.h	/^	double y;$/;"	m	struct:DVec2	typeref:typename:double

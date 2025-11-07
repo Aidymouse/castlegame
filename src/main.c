@@ -2,6 +2,7 @@
 #include <math.h>
 #include "defines/world.h"
 #include "defines/player.h"
+#include "defines/map.h"
 #include "structs/gameobjects.h"
 #include "DVec2.h"
 
@@ -93,6 +94,14 @@ int main() {
 		//BeginMode2D(cam_render);
 
 		DrawRectangle(0, 0, SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT, ColorAlpha(BLUE, 0.2));
+
+		// Tiles
+		for (int tile_y = 0; tile_y < SCREEN_TILES_HEIGHT; tile_y++) {
+			for (int tile_x = 0; tile_x < SCREEN_TILES_WIDTH; tile_x++) {
+								
+				DrawRectangleLines(tile_x*TILE_SIZE, tile_y*TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);
+			}
+		}
 
 		// Player
 		draw_hitbox(player.pos, player.hitbox);

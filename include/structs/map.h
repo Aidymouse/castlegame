@@ -1,5 +1,6 @@
 
 #include "structs/gameobjects.h"
+#include "defines/map.h"
 
 typedef enum TileFlags {
 	/* Tile can be collided with */
@@ -16,4 +17,4 @@ typedef struct Tile {
 	Hitbox hitbox;
 };
 
-typedef int[][] MapScreen;
+typedef int[SCREEN_TILES_HEIGHT][SCREEN_TILES_WIDTH] MapScreen;
