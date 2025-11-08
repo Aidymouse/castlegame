@@ -60,7 +60,6 @@ Hitbox	include/structs/gameobjects.h	/^} Hitbox;$/;"	t	typeref:struct:Hitbox
 LineSegment	include/collisions.h	/^typedef struct LineSegment {$/;"	s
 LineSegment	include/collisions.h	/^} LineSegment;$/;"	t	typeref:struct:LineSegment
 LinesCollideD	src/Vec2.c	/^bool LinesCollideD(double x1, double y1, double x2, double y2, double x3, double y3, double x4, /;"	f	typeref:typename:bool
-MapScreen	include/structs/map.h	/^typedef int[SCREEN_TILES_HEIGHT][SCREEN_TILES_WIDTH] MapScreen;$/;"	t	typeref:typename:int[SCREEN_TILES_HEIGHT][SCREEN_TILES_WIDTH]
 NOB_IMPLEMENTATION	nob.c	/^#define NOB_IMPLEMENTATION$/;"	d	file:
 PROGRAM_NAME	nob.c	/^#define PROGRAM_NAME /;"	d	file:
 Player	include/structs/gameobjects.h	/^typedef struct Player {$/;"	s
@@ -75,8 +74,10 @@ TF_SLOPE	include/structs/map.h	/^	TF_SLOPE=2,$/;"	e	enum:TileFlags
 TF_SOLID	include/structs/map.h	/^	TF_SOLID=1,$/;"	e	enum:TileFlags
 TILE_SIZE	include/defines/map.h	/^#define TILE_SIZE /;"	d
 Tile	include/structs/map.h	/^typedef struct Tile {$/;"	s
+Tile	include/structs/map.h	/^} Tile;$/;"	t	typeref:struct:Tile
 TileFlags	include/structs/map.h	/^typedef enum TileFlags {$/;"	g
 TileFlags	include/structs/map.h	/^} TileFlags;$/;"	t	typeref:enum:TileFlags
+TileId	include/structs/map.h	/^typedef int TileId;$/;"	t	typeref:typename:int
 Vec2	include/Vec2.h	/^#define Vec2 /;"	d
 Vec2GetAngle	src/Vec2.c	/^float Vec2GetAngle(Vector2 v) {$/;"	f	typeref:typename:float
 Vec2GetAngleBetween	src/Vec2.c	/^float Vec2GetAngleBetween(Vec2 A, Vec2 B) {$/;"	f	typeref:typename:float
@@ -102,7 +103,7 @@ height	include/structs/gameobjects.h	/^	int height;$/;"	m	struct:Hitbox	typeref:
 hit_line	include/collisions.h	/^	LineSegment hit_line;$/;"	m	struct:Collision	typeref:typename:LineSegment
 hitbox	include/structs/gameobjects.h	/^	Hitbox hitbox;$/;"	m	struct:Player	typeref:typename:Hitbox
 hitbox	include/structs/map.h	/^	Hitbox hitbox;$/;"	m	struct:Tile	typeref:typename:Hitbox
-id	include/structs/map.h	/^	int id; \/\/ Maps are stored as grids of tile ids$/;"	m	struct:Tile	typeref:typename:int
+id	include/structs/map.h	/^	TileId id; \/\/ Maps are stored as grids of tile ids$/;"	m	struct:Tile	typeref:typename:TileId
 main	nob.c	/^int main(int argc, char **argv) {$/;"	f	typeref:typename:int
 main	src/main.c	/^int main() {$/;"	f	typeref:typename:int
 motion_ray	include/structs/gameobjects.h	/^	Vector2 motion_ray;$/;"	m	struct:EntityDebugData	typeref:typename:Vector2

@@ -11,10 +11,11 @@ typedef enum TileFlags {
 	TF_DEADLY=4,
 } TileFlags;
 
+typedef int TileId;
+
 typedef struct Tile {
-	int id; // Maps are stored as grids of tile ids
+	TileId id; // Maps are stored as grids of tile ids
 	int flags;
 	Hitbox hitbox;
-};
+} Tile;
 
-typedef int[SCREEN_TILES_HEIGHT][SCREEN_TILES_WIDTH] MapScreen;

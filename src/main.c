@@ -3,6 +3,7 @@
 #include "defines/world.h"
 #include "defines/player.h"
 #include "defines/map.h"
+#include "structs/map.h"
 #include "structs/gameobjects.h"
 #include "DVec2.h"
 
@@ -25,6 +26,26 @@ int main() {
 
 	float dt = 0;
 
+
+	Tile tiles[10] = {
+		0,
+	};
+
+	TileId map_screen[SCREEN_TILES_HEIGHT * SCREEN_TILES_WIDTH] = {
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+	};
+
+	printf("Screen is %d x %d tiles\n", SCREEN_TILES_WIDTH, SCREEN_TILES_HEIGHT);
+
 	Player player = {
 		.pos = { .x = 400, .y = 200 },
 		.hitbox = {
@@ -34,9 +55,17 @@ int main() {
 		}
 	};
 
+	float t = 0;
+	TileId ti = 0;
+	
     while (!WindowShouldClose()) {
 		dt = GetFrameTime();
 		//dt = 0.016; // For debugging
+		t += dt;
+		if (t > 0.3) {
+			t = 0;
+			ti++;
+		}
 
 		// Ensure the screen is always in the middle of the window
 		float screen_width = GetScreenWidth();
@@ -96,11 +125,22 @@ int main() {
 		DrawRectangle(0, 0, SCREEN_WORLD_WIDTH, SCREEN_WORLD_HEIGHT, ColorAlpha(BLUE, 0.2));
 
 		// Tiles
-		for (int tile_y = 0; tile_y < SCREEN_TILES_HEIGHT; tile_y++) {
-			for (int tile_x = 0; tile_x < SCREEN_TILES_WIDTH; tile_x++) {
-								
-				DrawRectangleLines(tile_x*TILE_SIZE, tile_y*TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);
-			}
+		for (int tile_idx = 0; tile_idx < (SCREEN_TILES_WIDTH*SCREEN_TILES_HEIGHT); tile_idx++) {
+
+				
+				TileId id = map_screen[tile_idx];
+				if (id == 0) { continue; }
+
+
+				int tile_x = (tile_idx % SCREEN_TILES_WIDTH);
+				int tile_y = ((tile_idx/SCREEN_TILES_WIDTH) % SCREEN_TILES_HEIGHT);
+				if (tile_idx == ti) {
+					DrawRectangleLines(tile_x*TILE_SIZE, tile_y*TILE_SIZE, TILE_SIZE, TILE_SIZE, GREEN);
+				} else {
+					DrawRectangleLines(tile_x*TILE_SIZE, tile_y*TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);
+				}
+
+				printf("%d: %d, %d\n", tile_idx, tile_x, tile_y);
 		}
 
 		// Player
